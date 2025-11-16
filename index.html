@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Office 365 Access Profile Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <i class="fas fa-cloud"></i>
+            <h1>Office 365 Access Profile Manager</h1>
+        </div>
+        <div class="header-right">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="globalSearch" placeholder="Search users, groups, licenses...">
+            </div>
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <span>Admin User</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-section="overview">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Overview</span>
+                </a>
+                <a href="#" class="nav-item" data-section="users">
+                    <i class="fas fa-users"></i>
+                    <span>Users & Licenses</span>
+                </a>
+                <a href="#" class="nav-item" data-section="permissions">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Permissions</span>
+                </a>
+                <a href="#" class="nav-item" data-section="external">
+                    <i class="fas fa-user-plus"></i>
+                    <span>External Access</span>
+                </a>
+                <a href="#" class="nav-item" data-section="orgchart">
+                    <i class="fas fa-sitemap"></i>
+                    <span>Organization Chart</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Overview Section -->
+            <section id="overview" class="content-section active">
+                <div class="section-header">
+                    <h2>Dashboard Overview</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-download"></i> Export Report
+                        </button>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-sync"></i> Refresh Data
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalUsers">0</h3>
+                            <p>Total Users</p>
+                            <span class="stat-change positive">+12 this month</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="activeUsers">0</h3>
+                            <p>Active Users</p>
+                            <span class="stat-change positive">98.5%</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalLicenses">0</h3>
+                            <p>Licenses Assigned</p>
+                            <span class="stat-change neutral">85% utilized</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="adminCount">0</h3>
+                            <p>Admin Accounts</p>
+                            <span class="stat-change neutral">All services</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>License Distribution</h3>
+                        <canvas id="licenseChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>User Activity (Last 30 Days)</h3>
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Activities -->
+                <div class="card">
+                    <h3>Recent Access Changes</h3>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>User</th>
+                                    <th>Action</th>
+                                    <th>Resource</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentActivities">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users & Licenses Section -->
+            <section id="users" class="content-section">
+                <div class="section-header">
+                    <h2>Users & Licenses</h2>
+                    <div class="header-actions">
+                        <input type="text" id="userSearch" class="search-input" placeholder="Search users...">
+                        <select id="licenseFilter" class="filter-select">
+                            <option value="">All Licenses</option>
+                            <option value="E5">Office 365 E5</option>
+                            <option value="E3">Office 365 E3</option>
+                            <option value="E1">Office 365 E1</option>
+                            <option value="Business">Business Premium</option>
+                        </select>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>License</th>
+                                    <th>MFA Status</th>
+                                    <th>Last Sign-In</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTable">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Permissions Section -->
+            <section id="permissions" class="content-section">
+                <div class="section-header">
+                    <h2>Permission Matrix</h2>
+                    <div class="header-actions">
+                        <select id="permissionFilter" class="filter-select">
+                            <option value="">All Roles</option>
+                            <option value="Global">Global Administrator</option>
+                            <option value="Exchange">Exchange Administrator</option>
+                            <option value="SharePoint">SharePoint Administrator</option>
+                            <option value="Teams">Teams Administrator</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Administrative Role Assignments</h3>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Role</th>
+                                    <th>Service</th>
+                                    <th>Assigned Date</th>
+                                    <th>Assigned By</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="permissionsTable">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Mailbox Permissions</h3>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Mailbox</th>
+                                    <th>User with Access</th>
+                                    <th>Permission Type</th>
+                                    <th>Granted Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mailboxPermissionsTable">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Organization Chart Section -->
+            <section id="orgchart" class="content-section">
+                <div class="section-header">
+                    <h2>Organization Chart</h2>
+                    <div class="header-actions">
+                        <select id="departmentFilter" class="filter-select">
+                            <option value="">All Departments</option>
+                            <option value="Executive">Executive</option>
+                            <option value="Sales">Sales</option>
+                            <option value="IT">IT</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Finance">Finance</option>
+                            <option value="HR">HR</option>
+                            <option value="Operations">Operations</option>
+                        </select>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-download"></i> Export Chart
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div id="orgChartContainer"></div>
+                </div>
+            </section>
+
+            <!-- External Access Section -->
+            <section id="external" class="content-section">
+                <div class="section-header">
+                    <h2>External Access & Guest Users</h2>
+                </div>
+
+                <div class="card">
+                    <h3>Guest Users</h3>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Guest User</th>
+                                    <th>Email</th>
+                                    <th>Invited By</th>
+                                    <th>Access Level</th>
+                                    <th>Invited Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="guestUsersTable">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>External Sharing Settings</h3>
+                    <div class="settings-list">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>SharePoint External Sharing</h4>
+                                <p>Allow sharing with authenticated external users</p>
+                            </div>
+                            <span class="badge badge-success">Enabled</span>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>OneDrive External Sharing</h4>
+                                <p>Restrict to same organization only</p>
+                            </div>
+                            <span class="badge badge-warning">Restricted</span>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Teams Guest Access</h4>
+                                <p>Allow guest users to access teams and channels</p>
+                            </div>
+                            <span class="badge badge-success">Enabled</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- User 360 Profile Modal -->
+    <div id="user360Modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="user-profile-header">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="user-basic-info">
+                        <h2 id="modalUserName"></h2>
+                        <p id="modalUserEmail"></p>
+                        <div class="user-badges">
+                            <span class="badge" id="modalUserStatus"></span>
+                            <span class="badge" id="modalUserMFA"></span>
+                        </div>
+                    </div>
+                </div>
+                <button class="modal-close" onclick="closeUser360Modal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Tab Navigation -->
+                <div class="profile-tabs">
+                    <button class="tab-btn active" data-tab="overview">
+                        <i class="fas fa-chart-pie"></i> Overview
+                    </button>
+                    <button class="tab-btn" data-tab="licenses">
+                        <i class="fas fa-key"></i> Licenses & Services
+                    </button>
+                    <button class="tab-btn" data-tab="permissions">
+                        <i class="fas fa-shield-alt"></i> Permissions & Roles
+                    </button>
+                    <button class="tab-btn" data-tab="groups">
+                        <i class="fas fa-users"></i> Groups & Teams
+                    </button>
+                    <button class="tab-btn" data-tab="mailbox">
+                        <i class="fas fa-envelope"></i> Mailbox & Exchange
+                    </button>
+                    <button class="tab-btn" data-tab="sharepoint">
+                        <i class="fas fa-folder"></i> SharePoint & OneDrive
+                    </button>
+                    <button class="tab-btn" data-tab="teams">
+                        <i class="fas fa-comments"></i> Teams & Collaboration
+                    </button>
+                    <button class="tab-btn" data-tab="security">
+                        <i class="fas fa-lock"></i> Security & Compliance
+                    </button>
+                    <button class="tab-btn" data-tab="activity">
+                        <i class="fas fa-chart-line"></i> Activity & Usage
+                    </button>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="profile-tab-content">
+                    <!-- Overview Tab -->
+                    <div id="overview-tab" class="tab-content active">
+                        <div class="profile-stats-grid">
+                            <div class="profile-stat-card">
+                                <i class="fas fa-calendar-check"></i>
+                                <h4>Last Sign-In</h4>
+                                <p id="profileLastSignIn"></p>
+                            </div>
+                            <div class="profile-stat-card">
+                                <i class="fas fa-users"></i>
+                                <h4>Group Memberships</h4>
+                                <p id="profileGroupCount"></p>
+                            </div>
+                            <div class="profile-stat-card">
+                                <i class="fas fa-shield-alt"></i>
+                                <h4>Admin Roles</h4>
+                                <p id="profileAdminRoles"></p>
+                            </div>
+                            <div class="profile-stat-card">
+                                <i class="fas fa-database"></i>
+                                <h4>Storage Used</h4>
+                                <p id="profileStorage"></p>
+                            </div>
+                        </div>
+
+                        <div class="profile-section">
+                            <h3>Quick Summary</h3>
+                            <div class="summary-list">
+                                <div class="summary-item">
+                                    <strong>Department:</strong>
+                                    <span id="profileDepartment"></span>
+                                </div>
+                                <div class="summary-item">
+                                    <strong>Account Created:</strong>
+                                    <span id="profileCreated"></span>
+                                </div>
+                                <div class="summary-item">
+                                    <strong>Account Status:</strong>
+                                    <span id="profileAccountStatus"></span>
+                                </div>
+                                <div class="summary-item">
+                                    <strong>License Type:</strong>
+                                    <span id="profileLicenseType"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Licenses & Services Tab -->
+                    <div id="licenses-tab" class="tab-content">
+                        <div class="profile-section">
+                            <h3>Assigned Licenses</h3>
+                            <div id="profileLicenses" class="service-list"></div>
+                        </div>
+
+                        <div class="profile-section">
+                            <h3>Enabled Services</h3>
+                            <div id="profileServices" class="service-grid"></div>
+                        </div>
+                    </div>
+
+                    <!-- Permissions & Roles Tab -->
+                    <div id="permissions-tab" class="tab-content">
+                        <div class="profile-section">
+                            <h3>Administrative Roles</h3>
+                            <div id="profileAdminRolesList"></div>
+                        </div>
+
+                        <div class="profile-section">
+                            <h3>Delegated Permissions</h3>
+                            <div id="profileDelegatedPerms"></div>
+                        </div>
+                    </div>
+
+                    <!-- Groups & Teams Tab -->
+                    <div id="groups-tab" class="tab-content">
+                        <div class="profile-section">
+                            <h3>Group Memberships</h3>
+                            <div id="profileGroupsList"></div>
+                        </div>
+
+                        <div class="profile-section">
+                            <h3>Owned Groups</h3>
+                            <div id="profileOwnedGroups"></div>
+                        </div>
+                    </div>
+
+                    <!-- Mailbox & Exchange Tab -->
+                    <div id="mailbox-tab" class="tab-content">
+                        <div class="profile-section">
+                            <h3>Mailbox Information</h3>
+                            <div id="profileMailboxInfo" class="info-grid"></div>
+                        </div>
+
+                        <div class="profile-section">
+                            <h3>Mailbox Permissions</h3>
+                            <div id="profileMailboxPerms"></div>
+                        </div>
+
+                        <div class="profile-section">
+                            <h3>Email Aliases</h3>
+                            <div id="profileEmailAliases"></div>
+                        </div>
+                    </div>
+
+                    <!-- SharePoint & OneDrive Tab -->
+                    <div id="sharepoint-tab" class="tab-content">
+                        <div class="profile-section">
+                            <h3>OneDrive Storage</h3>
+                            <div id="profileOneDriveInfo" class="info-grid"></div>
+                        </div>
+
+                        <div class="profile-section">
+                            <h3>SharePoint Site Access</h3>
+                            <div id="profileSharePointSites"></div>
+                        </div>
+
+                        <div class="profile-section">
+                            <h3>Shared Files</h3>
+                            <div id="profileSharedFiles"></div>
+                        </div>
+                    </div>
+
+                    <!-- Teams & Collaboration Tab -->
+                    <div id="teams-tab" class="tab-content">
+                        <div class="profile-section">
+                            <h3>Teams Memberships</h3>
+                            <div id="profileTeamsList"></div>
+                        </div>
+
+                        <div class="profile-section">
+                            <h3>Teams Settings</h3>
+                            <div id="profileTeamsSettings" class="info-grid"></div>
+                        </div>
+                    </div>
+
+                    <!-- Security & Compliance Tab -->
+                    <div id="security-tab" class="tab-content">
+                        <div class="profile-section">
+                            <h3>Security Status</h3>
+                            <div id="profileSecurityStatus" class="info-grid"></div>
+                        </div>
+
+                        <div class="profile-section">
+                            <h3>Conditional Access</h3>
+                            <div id="profileConditionalAccess"></div>
+                        </div>
+
+                        <div class="profile-section">
+                            <h3>Compliance Policies</h3>
+                            <div id="profileCompliance"></div>
+                        </div>
+                    </div>
+
+                    <!-- Activity & Usage Tab -->
+                    <div id="activity-tab" class="tab-content">
+                        <div class="profile-section">
+                            <h3>Sign-In Activity (Last 30 Days)</h3>
+                            <canvas id="signInActivityChart"></canvas>
+                        </div>
+
+                        <div class="profile-section">
+                            <h3>Recent Activities</h3>
+                            <div id="profileRecentActivities"></div>
+                        </div>
+
+                        <div class="profile-section">
+                            <h3>Service Usage</h3>
+                            <div id="profileServiceUsage" class="usage-grid"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeUser360Modal()">Close</button>
+                <button class="btn btn-primary" onclick="exportUserProfile()">
+                    <i class="fas fa-download"></i> Export Profile
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

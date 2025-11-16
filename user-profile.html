@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - Office 365 Access Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .profile-page {
+            min-height: 100vh;
+            background: var(--bg-primary);
+        }
+
+        .profile-header-banner {
+            background: linear-gradient(135deg, #231F20 0%, #3D3A3B 100%);
+            color: white;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .profile-header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .profile-user-header {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .profile-user-avatar {
+            width: 80px;
+            height: 80px;
+            background: rgba(160, 204, 58, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid var(--quest-green);
+        }
+
+        .profile-user-avatar i {
+            font-size: 3.5rem;
+            color: var(--quest-green);
+        }
+
+        .profile-user-info h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .profile-user-info p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 0.75rem;
+        }
+
+        .profile-header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .profile-main-layout {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .profile-tabs-sidebar {
+            width: 280px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .profile-tabs {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem 0;
+        }
+
+        .tab-btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            background: var(--bg-primary);
+            color: var(--quest-green);
+        }
+
+        .tab-btn.active {
+            color: var(--quest-green);
+            border-left-color: var(--quest-green);
+            background: var(--bg-primary);
+            font-weight: 600;
+        }
+
+        .tab-btn i {
+            font-size: 1.2rem;
+            width: 24px;
+        }
+
+        .profile-content-area {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .back-button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .external-section {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .external-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--bg-primary);
+            border-radius: 6px;
+            margin-bottom: 0.75rem;
+            border-left: 3px solid var(--warning-color);
+        }
+
+        .external-item-info {
+            flex: 1;
+        }
+
+        .external-item h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .external-item p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .external-meta {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-primary);
+            border-radius: 6px;
+            margin-bottom: 0.75rem;
+        }
+
+        .link-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--quest-green);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .link-info {
+            flex: 1;
+        }
+
+        .link-info h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .link-info p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .link-url {
+            font-size: 0.8rem;
+            color: var(--primary-color);
+            font-family: 'Courier New', monospace;
+        }
+
+        @media (max-width: 1024px) {
+            .profile-main-layout {
+                flex-direction: column;
+            }
+
+            .profile-tabs-sidebar {
+                width: 100%;
+                position: static;
+            }
+
+            .profile-tabs {
+                flex-direction: row;
+                overflow-x: auto;
+            }
+
+            .tab-btn {
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-page">
+        <!-- Profile Header -->
+        <div class="profile-header-banner">
+            <div class="profile-header-content">
+                <div class="profile-user-header">
+                    <div class="profile-user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="profile-user-info">
+                        <h1 id="profileUserName"></h1>
+                        <p id="profileUserEmail"></p>
+                        <div class="user-badges">
+                            <span class="badge" id="profileUserStatus"></span>
+                            <span class="badge" id="profileUserMFA"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-header-actions">
+                    <a href="index.html" class="back-button">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                    <button class="btn btn-primary" onclick="exportUserProfile()">
+                        <i class="fas fa-download"></i> Export Profile
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Content -->
+        <div class="profile-main-layout">
+            <!-- Vertical Tab Sidebar -->
+            <div class="profile-tabs-sidebar">
+                <div class="profile-tabs">
+                    <button class="tab-btn active" data-tab="overview">
+                        <i class="fas fa-chart-pie"></i> <span>Overview</span>
+                    </button>
+                    <button class="tab-btn" data-tab="licenses">
+                        <i class="fas fa-key"></i> <span>Licenses & Services</span>
+                    </button>
+                    <button class="tab-btn" data-tab="permissions">
+                        <i class="fas fa-shield-alt"></i> <span>Permissions & Roles</span>
+                    </button>
+                    <button class="tab-btn" data-tab="groups">
+                        <i class="fas fa-users"></i> <span>Groups & Teams</span>
+                    </button>
+                    <button class="tab-btn" data-tab="mailbox">
+                        <i class="fas fa-envelope"></i> <span>Mailbox & Exchange</span>
+                    </button>
+                    <button class="tab-btn" data-tab="sharepoint">
+                        <i class="fas fa-folder"></i> <span>SharePoint & OneDrive</span>
+                    </button>
+                    <button class="tab-btn" data-tab="teams">
+                        <i class="fas fa-comments"></i> <span>Teams & Collaboration</span>
+                    </button>
+                    <button class="tab-btn" data-tab="external">
+                        <i class="fas fa-external-link-alt"></i> <span>External Sharing</span>
+                    </button>
+                    <button class="tab-btn" data-tab="security">
+                        <i class="fas fa-lock"></i> <span>Security & Compliance</span>
+                    </button>
+                    <button class="tab-btn" data-tab="activity">
+                        <i class="fas fa-chart-line"></i> <span>Activity & Usage</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="profile-content-area">
+                <div class="profile-tab-content">
+                <!-- Overview Tab -->
+                <div id="overview-tab" class="tab-content active">
+                    <div class="profile-stats-grid">
+                        <div class="profile-stat-card">
+                            <i class="fas fa-calendar-check"></i>
+                            <h4>Last Sign-In</h4>
+                            <p id="profileLastSignIn"></p>
+                        </div>
+                        <div class="profile-stat-card">
+                            <i class="fas fa-users"></i>
+                            <h4>Group Memberships</h4>
+                            <p id="profileGroupCount"></p>
+                        </div>
+                        <div class="profile-stat-card">
+                            <i class="fas fa-shield-alt"></i>
+                            <h4>Admin Roles</h4>
+                            <p id="profileAdminRoles"></p>
+                        </div>
+                        <div class="profile-stat-card">
+                            <i class="fas fa-database"></i>
+                            <h4>Storage Used</h4>
+                            <p id="profileStorage"></p>
+                        </div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3>Quick Summary</h3>
+                        <div class="summary-list">
+                            <div class="summary-item">
+                                <strong>Department:</strong>
+                                <span id="profileDepartment"></span>
+                            </div>
+                            <div class="summary-item">
+                                <strong>Account Created:</strong>
+                                <span id="profileCreated"></span>
+                            </div>
+                            <div class="summary-item">
+                                <strong>Account Status:</strong>
+                                <span id="profileAccountStatus"></span>
+                            </div>
+                            <div class="summary-item">
+                                <strong>License Type:</strong>
+                                <span id="profileLicenseType"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Licenses & Services Tab -->
+                <div id="licenses-tab" class="tab-content">
+                    <div class="profile-section">
+                        <h3>Assigned Licenses</h3>
+                        <div id="profileLicenses" class="service-list"></div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3>Enabled Services</h3>
+                        <div id="profileServices" class="service-grid"></div>
+                    </div>
+                </div>
+
+                <!-- Permissions & Roles Tab -->
+                <div id="permissions-tab" class="tab-content">
+                    <div class="profile-section">
+                        <h3>Administrative Roles</h3>
+                        <div id="profileAdminRolesList"></div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3>Delegated Permissions</h3>
+                        <div id="profileDelegatedPerms"></div>
+                    </div>
+                </div>
+
+                <!-- Groups & Teams Tab -->
+                <div id="groups-tab" class="tab-content">
+                    <div class="profile-section">
+                        <h3>Group Memberships</h3>
+                        <div id="profileGroupsList"></div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3>Owned Groups</h3>
+                        <div id="profileOwnedGroups"></div>
+                    </div>
+                </div>
+
+                <!-- Mailbox & Exchange Tab -->
+                <div id="mailbox-tab" class="tab-content">
+                    <div class="profile-section">
+                        <h3>Mailbox Information</h3>
+                        <div id="profileMailboxInfo" class="info-grid"></div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3>Mailbox Permissions</h3>
+                        <div id="profileMailboxPerms"></div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3>Email Aliases</h3>
+                        <div id="profileEmailAliases"></div>
+                    </div>
+                </div>
+
+                <!-- SharePoint & OneDrive Tab -->
+                <div id="sharepoint-tab" class="tab-content">
+                    <div class="profile-section">
+                        <h3>OneDrive Storage</h3>
+                        <div id="profileOneDriveInfo" class="info-grid"></div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3>SharePoint Site Access</h3>
+                        <div id="profileSharePointSites"></div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3>Shared Files</h3>
+                        <div id="profileSharedFiles"></div>
+                    </div>
+                </div>
+
+                <!-- Teams & Collaboration Tab -->
+                <div id="teams-tab" class="tab-content">
+                    <div class="profile-section">
+                        <h3>Teams Memberships</h3>
+                        <div id="profileTeamsList"></div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3>Teams Settings</h3>
+                        <div id="profileTeamsSettings" class="info-grid"></div>
+                    </div>
+                </div>
+
+                <!-- External Sharing Tab -->
+                <div id="external-tab" class="tab-content">
+                    <div class="external-section">
+                        <h3><i class="fas fa-exclamation-triangle" style="color: var(--warning-color);"></i> Files Shared Externally</h3>
+                        <div id="profileExternalFiles"></div>
+                    </div>
+
+                    <div class="external-section">
+                        <h3><i class="fas fa-link" style="color: var(--warning-color);"></i> External Links Created</h3>
+                        <div id="profileExternalLinks"></div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3>External Sharing Settings</h3>
+                        <div id="profileSharingSettings" class="info-grid"></div>
+                    </div>
+                </div>
+
+                <!-- Security & Compliance Tab -->
+                <div id="security-tab" class="tab-content">
+                    <div class="profile-section">
+                        <h3>Security Status</h3>
+                        <div id="profileSecurityStatus" class="info-grid"></div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3>Conditional Access</h3>
+                        <div id="profileConditionalAccess"></div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3>Compliance Policies</h3>
+                        <div id="profileCompliance"></div>
+                    </div>
+                </div>
+
+                <!-- Activity & Usage Tab -->
+                <div id="activity-tab" class="tab-content">
+                    <div class="profile-section">
+                        <h3>Sign-In Activity (Last 30 Days)</h3>
+                        <canvas id="signInActivityChart"></canvas>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3>Recent Activities</h3>
+                        <div id="profileRecentActivities"></div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3>Service Usage</h3>
+                        <div id="profileServiceUsage" class="usage-grid"></div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="user-profile.js"></script>
+</body>
+</html>
