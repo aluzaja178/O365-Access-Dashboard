@@ -704,3 +704,84 @@ function populateActivityTab(data) {
 function exportUserProfile() {
     alert('User Profile Export\n\nThis would generate a comprehensive PDF or Excel report containing:\n\n• User information\n• License details\n• All permissions and roles\n• Group memberships\n• Mailbox statistics\n• External files and links\n• Activity logs\n• Security status\n• Compliance information');
 }
+
+// Quick Actions Functions
+function populateUserDropdown() {
+    const select = document.getElementById('cloneTargetUser');
+    if (!select) return;
+    
+    const currentUser = mockData.users.find(u => u.email === userEmail);
+    mockData.users.filter(u => u.email !== userEmail).forEach(user => {
+        const option = document.createElement('option');
+        option.value = user.email;
+        option.textContent = user.name;
+        select.appendChild(option);
+    });
+}
+
+function clonePermissions() {
+    const targetUser = document.getElementById('cloneTargetUser').value;
+    if (!targetUser) {
+        alert('Please select a target user first.');
+        return;
+    }
+    
+    const targetUserName = mockData.users.find(u => u.email === targetUser)?.name;
+    const currentUser = mockData.users.find(u => u.email === userEmail);
+    
+    alert(`Clone Permissions\n\nCloning all permissions from:\n${currentUser.name}\n\nTo:\n${targetUserName}\n\nThis would replicate:\n✓ Group memberships\n✓ Admin roles\n✓ Mailbox permissions\n✓ SharePoint access\n✓ Teams membership\n\nConfirm to proceed with this action.`);
+}
+
+function grantTeamsAccess() {
+    const currentUser = mockData.users.find(u => u.email === userEmail);
+    alert(`Grant Teams Access\n\nGranting Microsoft Teams access to:\n${currentUser.name}\n\nThis would:\n✓ Enable Teams license\n✓ Add to default Teams\n✓ Configure Teams policies\n✓ Enable chat and calling\n\nConfirm to proceed.`);
+}
+
+function grantMailboxAccess() {
+    const currentUser = mockData.users.find(u => u.email === userEmail);
+    alert(`Grant Mailbox Permissions\n\nFor user: ${currentUser.name}\n\nSelect mailbox permissions:\n• Full Access\n• Send As\n• Send on Behalf\n\nSelect shared mailbox or user mailbox to grant access to.`);
+}
+
+function grantSharePointAccess() {
+    const currentUser = mockData.users.find(u => u.email === userEmail);
+    alert(`Grant SharePoint Access\n\nFor user: ${currentUser.name}\n\nThis would allow you to:\n✓ Add to SharePoint sites\n✓ Set permission levels (Read, Edit, Full Control)\n✓ Configure external sharing\n\nSelect site and permission level to proceed.`);
+}
+
+function addToSecurityGroup() {
+    const currentUser = mockData.users.find(u => u.email === userEmail);
+    alert(`Add to Security Group\n\nFor user: ${currentUser.name}\n\nAvailable groups:\n• Executive Team\n• Sales Team\n• Production Team\n• Operations Team\n• Technical Team\n• Management Team\n\nSelect groups to add user to.`);
+}
+
+function assignRole(roleName) {
+    const currentUser = mockData.users.find(u => u.email === userEmail);
+    alert(`Assign Admin Role\n\nRole: ${roleName}\n\nFor user: ${currentUser.name}\n\nThis would grant:\n✓ Administrative privileges\n✓ Access to admin portal\n✓ Role-specific permissions\n\nConfirm to assign this role.`);
+}
+
+function resetPassword() {
+    const currentUser = mockData.users.find(u => u.email === userEmail);
+    alert(`Reset Password\n\nFor user: ${currentUser.name}\n\nOptions:\n• Auto-generate temporary password\n• Require password change at next sign-in\n• Send password reset email\n\nConfirm to proceed.`);
+}
+
+function enableMFA() {
+    const currentUser = mockData.users.find(u => u.email === userEmail);
+    if (currentUser.mfa) {
+        alert(`MFA Status\n\nMFA is already enabled for ${currentUser.name}\n\nCurrent method: Microsoft Authenticator App`);
+    } else {
+        alert(`Enable MFA\n\nFor user: ${currentUser.name}\n\nThis would:\n✓ Require multi-factor authentication\n✓ Send setup instructions\n✓ Enhance account security\n\nConfirm to enable MFA.`);
+    }
+}
+
+function blockSignIn() {
+    const currentUser = mockData.users.find(u => u.email === userEmail);
+    alert(`Block Sign-In\n\nFor user: ${currentUser.name}\n\n⚠️ WARNING ⚠️\nThis will prevent the user from signing in to all Microsoft 365 services.\n\nThe user will be immediately signed out of all active sessions.\n\nConfirm to block sign-in.`);
+}
+
+function revokeAllSessions() {
+    const currentUser = mockData.users.find(u => u.email === userEmail);
+    alert(`Revoke All Sessions\n\nFor user: ${currentUser.name}\n\n⚠️ WARNING ⚠️\nThis will:\n✓ Sign out from all devices\n✓ Clear all active sessions\n✓ Revoke all refresh tokens\n\nUser will need to sign in again on all devices.\n\nConfirm to revoke all sessions.`);
+}
+
+// Initialize dropdown on page load
+document.addEventListener('DOMContentLoaded', function() {
+    populateUserDropdown();
+});

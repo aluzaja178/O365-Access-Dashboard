@@ -142,9 +142,20 @@ function loadUsersTable() {
             <td>${user.lastSignIn}</td>
             <td><span class="badge ${user.status === 'Active' ? 'badge-success' : 'badge-secondary'}">${user.status}</span></td>
             <td>
-                <button class="action-btn" onclick="viewUserDetails('${user.email}')">
-                    <i class="fas fa-eye"></i> View
-                </button>
+                <div class="action-buttons">
+                    <button class="action-btn action-btn-primary" onclick="viewUserDetails('${user.email}')" title="View Details">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="action-btn action-btn-secondary" onclick="showClonePermissionsModal('${user.email}')" title="Clone Permissions">
+                        <i class="fas fa-clone"></i>
+                    </button>
+                    <button class="action-btn action-btn-success" onclick="showQuickActionsModal('${user.email}')" title="Quick Actions">
+                        <i class="fas fa-bolt"></i>
+                    </button>
+                    <button class="action-btn action-btn-warning" onclick="showAssignRoleModal('${user.email}')" title="Assign Role">
+                        <i class="fas fa-user-shield"></i>
+                    </button>
+                </div>
             </td>
         </tr>
     `).join('');
@@ -1182,4 +1193,210 @@ function initializeOrgChartFilters() {
             alert('Organization chart export functionality will be implemented with a PDF generation library in production.');
         });
     }
+}
+
+// Quick Actions Modal Functions
+function showClonePermissionsModal(userEmail) {
+    const user = mockData.users.find(u => u.email === userEmail);
+    const otherUsers = mockData.users.filter(u => u.email !== userEmail);
+    
+    const userOptions = otherUsers.map(u => `<option value="${u.email}">${u.name}</option>`).join('');
+    
+    const modalContent = `
+        <h3><i class="fas fa-clone"></i> Clone Permissions</h3>
+        <p>Clone permissions from <strong>${user.name}</strong> to another user</p>
+        <div style="margin: 1.5rem 0;">
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Select Target User:</label>
+            <select id="cloneTargetUser" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.95rem;">
+                <option value="">-- Choose a user --</option>
+                ${userOptions}
+            </select>
+        </div>
+        <div style="margin: 1.5rem 0; padding: 1rem; background: var(--background-alt); border-radius: 6px;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; cursor: pointer;">
+                <input type="checkbox" checked> Clone Group Memberships
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; cursor: pointer;">
+                <input type="checkbox" checked> Clone Admin Roles
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; cursor: pointer;">
+                <input type="checkbox" checked> Clone Mailbox Permissions
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                <input type="checkbox" checked> Clone Teams Access
+            </label>
+        </div>
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button onclick="executeClonePermissions('${userEmail}')" class="btn btn-primary" style="flex: 1;">
+                <i class="fas fa-check"></i> Clone Permissions
+            </button>
+            <button onclick="closeQuickActionModal()" class="btn btn-secondary" style="flex: 1;">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+        </div>
+    `;
+    
+    showQuickActionModal(modalContent);
+}
+
+function showQuickActionsModal(userEmail) {
+    const user = mockData.users.find(u => u.email === userEmail);
+    
+    const modalContent = `
+        <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+        <p>Quick access actions for <strong>${user.name}</strong></p>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1.5rem 0;">
+            <button onclick="grantTeamsAccessFromList('${userEmail}')" class="quick-action-card">
+                <i class="fas fa-comments" style="font-size: 2rem; color: #464EB8; margin-bottom: 0.5rem;"></i>
+                <h4>Teams Access</h4>
+                <p>Grant Microsoft Teams access</p>
+            </button>
+            <button onclick="grantMailboxAccessFromList('${userEmail}')" class="quick-action-card">
+                <i class="fas fa-envelope" style="font-size: 2rem; color: #0078D4; margin-bottom: 0.5rem;"></i>
+                <h4>Mailbox</h4>
+                <p>Grant mailbox permissions</p>
+            </button>
+            <button onclick="grantSharePointAccessFromList('${userEmail}')" class="quick-action-card">
+                <i class="fas fa-folder-open" style="font-size: 2rem; color: #D83B01; margin-bottom: 0.5rem;"></i>
+                <h4>SharePoint</h4>
+                <p>Grant SharePoint access</p>
+            </button>
+            <button onclick="addToGroupFromList('${userEmail}')" class="quick-action-card">
+                <i class="fas fa-users" style="font-size: 2rem; color: #107C10; margin-bottom: 0.5rem;"></i>
+                <h4>Add to Group</h4>
+                <p>Add to security group</p>
+            </button>
+        </div>
+        <button onclick="closeQuickActionModal()" class="btn btn-secondary" style="width: 100%; margin-top: 1rem;">
+            <i class="fas fa-times"></i> Close
+        </button>
+    `;
+    
+    showQuickActionModal(modalContent);
+}
+
+function showAssignRoleModal(userEmail) {
+    const user = mockData.users.find(u => u.email === userEmail);
+    
+    const modalContent = `
+        <h3><i class="fas fa-user-shield"></i> Assign Admin Role</h3>
+        <p>Assign administrative role to <strong>${user.name}</strong></p>
+        <div style="display: grid; gap: 1rem; margin: 1.5rem 0;">
+            <button onclick="assignRoleFromList('${userEmail}', 'Global Administrator')" class="role-option">
+                <i class="fas fa-crown"></i>
+                <div>
+                    <h4>Global Administrator</h4>
+                    <p>Full access to all admin features</p>
+                </div>
+            </button>
+            <button onclick="assignRoleFromList('${userEmail}', 'Exchange Administrator')" class="role-option">
+                <i class="fas fa-envelope"></i>
+                <div>
+                    <h4>Exchange Administrator</h4>
+                    <p>Manage Exchange Online settings</p>
+                </div>
+            </button>
+            <button onclick="assignRoleFromList('${userEmail}', 'SharePoint Administrator')" class="role-option">
+                <i class="fas fa-sitemap"></i>
+                <div>
+                    <h4>SharePoint Administrator</h4>
+                    <p>Manage SharePoint sites and settings</p>
+                </div>
+            </button>
+            <button onclick="assignRoleFromList('${userEmail}', 'Teams Administrator')" class="role-option">
+                <i class="fas fa-comments"></i>
+                <div>
+                    <h4>Teams Administrator</h4>
+                    <p>Manage Microsoft Teams settings</p>
+                </div>
+            </button>
+            <button onclick="assignRoleFromList('${userEmail}', 'User Administrator')" class="role-option">
+                <i class="fas fa-users-cog"></i>
+                <div>
+                    <h4>User Administrator</h4>
+                    <p>Manage users and groups</p>
+                </div>
+            </button>
+        </div>
+        <button onclick="closeQuickActionModal()" class="btn btn-secondary" style="width: 100%; margin-top: 1rem;">
+            <i class="fas fa-times"></i> Cancel
+        </button>
+    `;
+    
+    showQuickActionModal(modalContent);
+}
+
+function showQuickActionModal(content) {
+    // Remove existing modal if any
+    const existingModal = document.getElementById('quickActionModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Create modal
+    const modal = document.createElement('div');
+    modal.id = 'quickActionModal';
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content-quick">
+            ${content}
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Close on outside click
+    modal.onclick = function(event) {
+        if (event.target === modal) {
+            closeQuickActionModal();
+        }
+    };
+}
+
+function closeQuickActionModal() {
+    const modal = document.getElementById('quickActionModal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+function executeClonePermissions(sourceEmail) {
+    const targetEmail = document.getElementById('cloneTargetUser').value;
+    if (!targetEmail) {
+        alert('Please select a target user.');
+        return;
+    }
+    
+    const sourceUser = mockData.users.find(u => u.email === sourceEmail);
+    const targetUser = mockData.users.find(u => u.email === targetEmail);
+    
+    alert(`✅ Permissions Cloned Successfully!\n\nFrom: ${sourceUser.name}\nTo: ${targetUser.name}\n\nThe following have been replicated:\n✓ Group memberships\n✓ Admin roles\n✓ Mailbox permissions\n✓ Teams access`);
+    closeQuickActionModal();
+}
+
+function grantTeamsAccessFromList(userEmail) {
+    const user = mockData.users.find(u => u.email === userEmail);
+    alert(`✅ Teams Access Granted\n\nUser: ${user.name}\n\n✓ Teams license enabled\n✓ Added to default teams\n✓ Chat and calling configured`);
+    closeQuickActionModal();
+}
+
+function grantMailboxAccessFromList(userEmail) {
+    const user = mockData.users.find(u => u.email === userEmail);
+    alert(`📧 Grant Mailbox Permissions\n\nFor: ${user.name}\n\nSelect:\n• Mailbox to grant access to\n• Permission type (Full Access, Send As, etc.)`);
+}
+
+function grantSharePointAccessFromList(userEmail) {
+    const user = mockData.users.find(u => u.email === userEmail);
+    alert(`📁 Grant SharePoint Access\n\nFor: ${user.name}\n\nSelect:\n• SharePoint site\n• Permission level (Read, Edit, Full Control)`);
+}
+
+function addToGroupFromList(userEmail) {
+    const user = mockData.users.find(u => u.email === userEmail);
+    alert(`👥 Add to Security Group\n\nFor: ${user.name}\n\nAvailable groups:\n• Executive Team\n• Sales Team\n• Production Team\n• Operations Team\n• Technical Team`);
+}
+
+function assignRoleFromList(userEmail, roleName) {
+    const user = mockData.users.find(u => u.email === userEmail);
+    alert(`✅ Admin Role Assigned\n\nRole: ${roleName}\nUser: ${user.name}\n\n✓ Administrative privileges granted\n✓ Access to admin portal enabled`);
+    closeQuickActionModal();
 }
